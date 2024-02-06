@@ -38,8 +38,20 @@ const destroy = async (req,res) => {
         res.status(204).end()
         //delete
     } catch(error){
-        res.status(404).json({"error": error.message})
+        res.status(404).json({error: error.message})
     }
 }
 
-module.exports = { index, show, create, destroy }
+const update = async (req,res) => {
+    try{
+        const data = req.body
+        let name = req.params.name
+        const country = await Country.getOneByCountryName(name)
+        const updateCountry = await country.update(data)
+        res.status(200).json(updateCountry)
+    } catch (error) {
+        res.status(404).json({error: error.message})
+    }
+}
+
+module.exports = { index, show, create, destroy, update }

@@ -44,6 +44,17 @@ class Country {
         let response = await db.query("DELETE FROM country WHERE name = $1 RETURNING *", [this.name])
         return new Country(response.rows[0])
     }
+
+    async update(data){ 
+        const {name, capital, population, languages} = data
+        const exists = await db.query("SELECT * FROM country WHERE LOWER(name) = LOWER($1);", [this.name])
+        if(exists.rows.length === 0) {
+            throw new Error("Country does not exist")
+        }
+        let response = await db.query("UPDATE country SET name = $1, capital = $2, population =$3, languages = $4 WHERE name = $5;", [name, capital, population, languages, this.name])
+        return new Country(response.rows[0])
+    }
+    
   }
   
   module.exports = Country;
